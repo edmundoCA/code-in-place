@@ -9,6 +9,8 @@ def main():
     move_R_prime()
     move_L()
     move_L_prime()
+    move_U()
+    move_U_prime()
     display_in_console_pretty()
 
 def display_in_console():
@@ -35,6 +37,14 @@ def move_L():
         rubik_cube["back"][i][0] = rubik_cube["down"][i][0]
         rubik_cube["down"][i][0] = memory
 
+def move_U():
+    for i in range(3):
+        memory = rubik_cube["front"][0][i]
+        rubik_cube["front"][0][i] = rubik_cube["right"][0][i]
+        rubik_cube["right"][0][i] = rubik_cube["back"][0][i]
+        rubik_cube["back"][0][i] = rubik_cube["left"][0][i]
+        rubik_cube["left"][0][i] = memory
+
 def move_R_prime():
     for _ in range(3):
         move_R()
@@ -42,6 +52,10 @@ def move_R_prime():
 def move_L_prime():
     for _ in range(3):
         move_L()
+
+def move_U_prime():
+    for _ in range(3):
+        move_U()
 
 def display_in_console_pretty():
     face_console_output = " " * 8 + "-" * 9 + "\n"
