@@ -4,19 +4,10 @@ rubik_cube = {}
 
 def main():
     set_initial_state()
+    move_U_prime()
+    move_D_prime()
     display_in_console_pretty()
     move_R()
-    move_R_prime()
-    move_L()
-    move_L_prime()
-    move_U()
-    move_U_prime()
-    move_D()
-    move_D_prime()
-    move_F()
-    move_F_prime()
-    move_B()
-    move_B_prime()
     display_in_console_pretty()
 
 def display_in_console():
@@ -34,6 +25,12 @@ def move_R():
         rubik_cube["down"][2-i][2] = rubik_cube["back"][i][0]
         rubik_cube["back"][i][0] = rubik_cube["up"][i][2]
         rubik_cube["up"][i][2] = memory
+    for i in range(2):
+        memory = rubik_cube["right"][0][i]
+        rubik_cube["right"][0][i] = rubik_cube["right"][2-i][0]
+        rubik_cube["right"][2-i][0] = rubik_cube["right"][2][2-i]
+        rubik_cube["right"][2][2-i] = rubik_cube["right"][i][2]
+        rubik_cube["right"][i][2] = memory
 
 def move_L():
     for i in range(3):
