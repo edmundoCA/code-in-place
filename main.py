@@ -5,6 +5,9 @@ rubik_cube = {}
 def main():
     set_initial_state()
     display_in_console_pretty()
+    move_R()
+    move_R_prime()
+    display_in_console_pretty()
 
 def display_in_console():
     for key in rubik_cube.keys():
@@ -13,6 +16,18 @@ def display_in_console():
         print("---------")
         for row in rubik_cube[key]:
             print(row)
+
+def move_R():
+    for i in range(3):
+        memory = rubik_cube["front"][i][2]
+        rubik_cube["front"][i][2] = rubik_cube["down"][i][2]
+        rubik_cube["down"][i][2] = rubik_cube["back"][i][2]
+        rubik_cube["back"][i][2] = rubik_cube["up"][i][2]
+        rubik_cube["up"][i][2] = memory
+
+def move_R_prime():
+    for _ in range(3):
+        move_R()
 
 def display_in_console_pretty():
     face_console_output = " " * 8 + "-" * 9 + "\n"
