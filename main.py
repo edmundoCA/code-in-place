@@ -41,12 +41,14 @@ def is_color_tile_at_edge(front_face, row_front, col_front, color, side_face, ro
             or rubik_cube[side_face][row_side][col_side] == color)
 
 def look_at_the_middle_layer():
-    # I choose the *left* face to input as side_face so the F move would put it on the "Up" face
-    back_right_edge = is_color_tile_at_edge("back", 1, 0, "white", "right", 1, 2)
-    right_front_edge = is_color_tile_at_edge("right", 1, 0, "white", "front", 1, 2)
-    front_left_edge = is_color_tile_at_edge("front", 1, 0, "white", "left", 1, 2)
-    left_back_edge = is_color_tile_at_edge("left", 1, 0, "white", "back", 1, 2)
-    return back_right_edge, right_front_edge, front_left_edge, left_back_edge
+    FACES_TO_LOOK_UP = ("back", "right", "front", "left")
+    edges = []
+    for i in range(len(FACES_TO_LOOK_UP)):
+        next_index = 0 if i + 1 == len(FACES_TO_LOOK_UP) else i + 1
+        # I choose the *left* face to input as side_face so the F move would put it on the "Up" face
+        edge = is_color_tile_at_edge(FACES_TO_LOOK_UP[i], 1, 0, "white", FACES_TO_LOOK_UP[next_index], 1, 2)
+        edges.append(edge)
+    return edges
 
 def look_at_the_top_layer():
     back_edge = is_color_tile_at_edge("up", 0, 1, "white", "back", 0, 1) # 12 o'clock
