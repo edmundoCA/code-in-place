@@ -5,34 +5,16 @@ RUBIK_FACES = ("up", "down", "left", "right", "front", "back")
 
 rubik_cube = {}
 
+CUBE_IN_A_CUBE_IN_A_CUBE_PATTERN = "U' L' U' F' R2 B' R F U B2 U B' L U' F U R F'"
+CUBE_IN_A_CUBE_IN_A_CUBE_INVERSE_PATTERN = "F R' U' F' U L' B U' B2 U' F' R' B R2 F U L U"
+
 def main():
     set_initial_state()
-    make_cube_in_a_cube_in_a_cube_pattern()
+    play_movements(CUBE_IN_A_CUBE_IN_A_CUBE_PATTERN)
     display_in_console_pretty()
-    make_cube_in_a_cube_in_a_cube_pattern_inverse()
+    play_movements(CUBE_IN_A_CUBE_IN_A_CUBE_INVERSE_PATTERN)
     display_in_console_pretty()
 
-def make_cube_in_a_cube_in_a_cube_pattern():
-    move_U_prime()
-    move_L_prime()
-    move_U_prime()
-    move_F_prime()
-    move_R()
-    move_R()
-    move_B_prime()
-    move_R()
-    move_F()
-    move_U()
-    move_B()
-    move_B()
-    move_U()
-    move_B_prime()
-    move_L()
-    move_U_prime()
-    move_F()
-    move_U()
-    move_R()
-    move_F_prime()
 def parse_moves(movements):
     movements_parsed = movements.replace(" ", "").upper()
     # looks for double movements, e.g. R2
@@ -55,28 +37,6 @@ def play_movements(movements):
     moves = parse_moves(movements)
     for move in moves:
         ALLOWED_MOVES[move]()
-
-def make_cube_in_a_cube_in_a_cube_pattern_inverse():
-    move_F()
-    move_R_prime()
-    move_U_prime()
-    move_F_prime()
-    move_U()
-    move_L_prime()
-    move_B()
-    move_U_prime()
-    move_B()
-    move_B()
-    move_U_prime()
-    move_F_prime()
-    move_R_prime()
-    move_B()
-    move_R()
-    move_R()
-    move_F()
-    move_U()
-    move_L()
-    move_U()
 
 def display_in_console():
     for key in rubik_cube.keys():
