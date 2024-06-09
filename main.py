@@ -17,12 +17,49 @@ CUBE_IN_A_CUBE_IN_A_CUBE_INVERSE_PATTERN = "F R' U' F' U L' B U' B2 U' F' R' B R
 
 def main():
     set_initial_state()
-    play_movements(CUBE_IN_A_CUBE_IN_A_CUBE_PATTERN)
+    SAMPLE_SCRAMBLE = "R2 L U D' L D2 B R U R B' U' F R2 D U B'"
+    play_movements(SAMPLE_SCRAMBLE)
     display_in_console_pretty()
-    play_movements(CUBE_IN_A_CUBE_IN_A_CUBE_INVERSE_PATTERN)
-    display_in_console_pretty()
-    play_movements(get_scrambling_movements())
-    display_in_console_pretty()
+    solve_rubik_s_cube()
+
+def solve_rubik_s_cube():
+    solve_layer_one()
+    solve_the_middle_layer()
+    solve_the_final_layer()
+
+def solve_layer_one():
+    create_a_daisy()
+
+def create_a_daisy():
+    top_layer = look_at_the_top_layer()
+    middle_layer = look_at_the_middle_layer()
+    print(top_layer)
+    print(middle_layer)
+
+def is_color_tile_at_edge(front_face, row_front, col_front, color, side_face, row_side, col_side):
+    return (rubik_cube[front_face][row_front][col_front] == color
+            or rubik_cube[side_face][row_side][col_side] == color)
+
+def look_at_the_middle_layer():
+    # I choose the *left* face to input as side_face so the F move would put it on the "Up" face
+    back_right_edge = is_color_tile_at_edge("back", 1, 0, "white", "right", 1, 2)
+    right_front_edge = is_color_tile_at_edge("right", 1, 0, "white", "front", 1, 2)
+    front_left_edge = is_color_tile_at_edge("front", 1, 0, "white", "left", 1, 2)
+    left_back_edge = is_color_tile_at_edge("left", 1, 0, "white", "back", 1, 2)
+    return back_right_edge, right_front_edge, front_left_edge, left_back_edge
+
+def look_at_the_top_layer():
+    back_edge = is_color_tile_at_edge("up", 0, 1, "white", "back", 0, 1) # 12 o'clock
+    right_edge = is_color_tile_at_edge("up", 1, 2, "white", "right", 0, 1) # 3 o'clock
+    front_edge = is_color_tile_at_edge("up", 2, 1, "white", "front", 0, 1) # 6 o'clock
+    left_edge = is_color_tile_at_edge("up", 1, 0, "white", "left", 0, 1) # 9 o'clock
+    return back_edge, right_edge, front_edge, left_edge
+
+def solve_the_middle_layer():
+    pass
+
+def solve_the_final_layer():
+    pass
 
 def get_scrambling_movements():
     INITIAL_DISTANCE = 0
