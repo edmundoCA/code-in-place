@@ -21,24 +21,26 @@ def main():
     display_in_console_pretty()
     play_movements(CUBE_IN_A_CUBE_IN_A_CUBE_INVERSE_PATTERN)
     display_in_console_pretty()
-    print(get_scrambling_pattern())
+    play_movements(get_scrambling_movements())
+    display_in_console_pretty()
 
-def get_scrambling_pattern():
+def get_scrambling_movements():
     INITIAL_DISTANCE = 0
-    distance = INITIAL_DISTANCE
-    memory_last_move = None
-    moves = []
-    while distance < GOD_S_NUMBER:
-        move = random.choice(MOVES)
-        if memory_last_move and move[0] == memory_last_move[0]:
-            continue
-        elif "2" in move:
-            distance += 2
-        else:
-            distance += 1
-        moves.append(move)
-        memory_last_move = move
+    INITIAL_MOVES = []
+    moves = get_scrambling_moves(INITIAL_DISTANCE, INITIAL_MOVES)
     return " ".join(moves)
+
+def get_scrambling_moves(distance, moves):
+    if distance >= GOD_S_NUMBER:
+        return moves
+    move = random.choice(MOVES)
+    if distance > 0 and move[0] == moves[len(moves) - 1][0]:
+        return get_scrambling_moves(distance, moves)
+    if "2" in move:
+        distance += 1
+    distance += 1
+    moves.append(move)
+    return get_scrambling_moves(distance, moves)
 
 def parse_moves(movements):
     movements_parsed = movements.replace(" ", "").upper()
