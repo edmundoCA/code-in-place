@@ -25,12 +25,15 @@ def move_R():
         rubik_cube["down"][2-i][2] = rubik_cube["back"][i][0]
         rubik_cube["back"][i][0] = rubik_cube["up"][i][2]
         rubik_cube["up"][i][2] = memory
+    rotate_face("right")
+
+def rotate_face(face):
     for i in range(2):
-        memory = rubik_cube["right"][0][i]
-        rubik_cube["right"][0][i] = rubik_cube["right"][2-i][0]
-        rubik_cube["right"][2-i][0] = rubik_cube["right"][2][2-i]
-        rubik_cube["right"][2][2-i] = rubik_cube["right"][i][2]
-        rubik_cube["right"][i][2] = memory
+        memory = rubik_cube[face][0][i]
+        rubik_cube[face][0][i] = rubik_cube[face][2-i][0]
+        rubik_cube[face][2-i][0] = rubik_cube[face][2][2-i]
+        rubik_cube[face][2][2-i] = rubik_cube[face][i][2]
+        rubik_cube[face][i][2] = memory
 
 def move_L():
     for i in range(3):
