@@ -1,9 +1,16 @@
 import re
+import random
 
 RUBIK_COLORS = ("yellow", "white", "orange", "red", "blue", "green")
 RUBIK_FACES = ("up", "down", "left", "right", "front", "back")
+MOVES = [
+    "R", "R'", "R2", "L", "L'", "L2",
+    "U", "U'", "U2", "D", "D'", "D2",
+    "F", "F'", "F2", "B", "B'", "B2"
+]
 
 rubik_cube = {}
+GOD_S_NUMBER = 20
 
 CUBE_IN_A_CUBE_IN_A_CUBE_PATTERN = "U' L' U' F' R2 B' R F U B2 U B' L U' F U R F'"
 CUBE_IN_A_CUBE_IN_A_CUBE_INVERSE_PATTERN = "F R' U' F' U L' B U' B2 U' F' R' B R2 F U L U"
@@ -14,6 +21,24 @@ def main():
     display_in_console_pretty()
     play_movements(CUBE_IN_A_CUBE_IN_A_CUBE_INVERSE_PATTERN)
     display_in_console_pretty()
+    print(get_scrambling_pattern())
+
+def get_scrambling_pattern():
+    INITIAL_DISTANCE = 0
+    distance = INITIAL_DISTANCE
+    memory_last_move = None
+    moves = []
+    while distance < GOD_S_NUMBER:
+        move = random.choice(MOVES)
+        if memory_last_move and move[0] == memory_last_move[0]:
+            continue
+        elif "2" in move:
+            distance += 2
+        else:
+            distance += 1
+        moves.append(move)
+        memory_last_move = move
+    return " ".join(moves)
 
 def parse_moves(movements):
     movements_parsed = movements.replace(" ", "").upper()
