@@ -22,8 +22,8 @@ def move_R():
     for i in range(3):
         memory = rubik_cube["front"][i][2]
         rubik_cube["front"][i][2] = rubik_cube["down"][i][2]
-        rubik_cube["down"][2-i][2] = rubik_cube["back"][i][0]
-        rubik_cube["back"][i][0] = rubik_cube["up"][i][2]
+        rubik_cube["down"][i][2] = rubik_cube["back"][2-i][0]
+        rubik_cube["back"][2-i][0] = rubik_cube["up"][i][2]
         rubik_cube["up"][i][2] = memory
     rotate_face("right")
 
