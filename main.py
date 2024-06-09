@@ -1,5 +1,8 @@
+import re
+
 RUBIK_COLORS = ("yellow", "white", "orange", "red", "blue", "green")
 RUBIK_FACES = ("up", "down", "left", "right", "front", "back")
+
 rubik_cube = {}
 
 def main():
@@ -30,6 +33,28 @@ def make_cube_in_a_cube_in_a_cube_pattern():
     move_U()
     move_R()
     move_F_prime()
+def parse_moves(movements):
+    movements_parsed = movements.replace(" ", "").upper()
+    # looks for double movements, e.g. R2
+    double_movements_pattern = re.compile(r"(\w)(2)")
+    movements_parsed = double_movements_pattern.sub(lambda match: match.group(1) * int(match.group(2)), movements_parsed)
+    # looks for single moves, e.g. U or U'
+    moves_pattern = re.compile(r"(\w'?)")
+    moves = moves_pattern.findall(movements_parsed)
+    return moves
+
+def play_movements(movements):
+    ALLOWED_MOVES = {
+        "R": move_R, "R'": move_R_prime,
+        "L": move_L, "L'": move_L_prime,
+        "U": move_U, "U'": move_U_prime,
+        "D": move_D, "D'": move_D_prime,
+        "F": move_F, "F'": move_F_prime,
+        "B": move_B, "B'": move_B_prime,
+    }
+    moves = parse_moves(movements)
+    for move in moves:
+        ALLOWED_MOVES[move]()
 
 def make_cube_in_a_cube_in_a_cube_pattern_inverse():
     move_F()
