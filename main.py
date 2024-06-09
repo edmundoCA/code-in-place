@@ -7,7 +7,7 @@ def main():
     move_U_prime()
     move_D_prime()
     display_in_console_pretty()
-    move_F()
+    move_B()
     display_in_console_pretty()
 
 def display_in_console():
@@ -80,6 +80,7 @@ def move_B():
         rubik_cube["right"][-i][2] = rubik_cube["down"][2][i]
         rubik_cube["down"][2][i] = rubik_cube["left"][i][0]
         rubik_cube["left"][i][0] = memory
+        rotate_face_prime("back")
 
 def move_R_prime():
     for _ in range(3):
