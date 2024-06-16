@@ -11,6 +11,7 @@ MOVES = [
 FACES_TO_LOOK_UP = ("back", "right", "front", "left")
 
 rubik_cube = {}
+daisy = {}
 GOD_S_NUMBER = 20
 
 CUBE_IN_A_CUBE_IN_A_CUBE_PATTERN = "U' L' U' F' R2 B' R F U B2 U B' L U' F U R F'"
@@ -18,10 +19,14 @@ CUBE_IN_A_CUBE_IN_A_CUBE_INVERSE_PATTERN = "F R' U' F' U L' B U' B2 U' F' R' B R
 
 def main():
     set_initial_state()
-    SAMPLE_SCRAMBLE = "R2 L U D' L D2 B R U R B' U' F R2 D U B'"
+    # SAMPLE_SCRAMBLE = "R2 L U D' L D2 B R U R B' U' F R2 D U B'"
+    SAMPLE_SCRAMBLE = "L2 D' U' B' U' R L2 B2 F B D' U' F L2 D B"
+    # SAMPLE_SCRAMBLE = "F L2 D B2 R2 L2 F B U2 B' L' F2 L' F"
+    # SAMPLE_SCRAMBLE = "D L' B' U' F2 R2 U2 F D2 L' R2 B F2 U"
     play_movements(SAMPLE_SCRAMBLE)
     display_in_console_pretty()
     solve_rubik_s_cube()
+    display_in_console_pretty()
 
 def solve_rubik_s_cube():
     solve_layer_one()
@@ -32,60 +37,61 @@ def solve_layer_one():
     create_a_daisy()
 
 def create_a_daisy():
-    daisy = look_at_the_top_layer()
+    look_at_the_top_layer()
     print(daisy)
-    middle_layer = look_at_the_middle_layer(daisy)
-    print(middle_layer)
+    while are_white_edges_at_the_middle_layer():
+        move_petals_from_the_middle_layer()
+    print(daisy)
 
-def is_color_tile_at_edge(front_face, row_front, col_front, color, side_face, row_side, col_side):
+def move_petals_from_the_middle_layer():
+    PRIME_MOVES = [move_R_prime, move_F_prime, move_L_prime, move_B_prime]
+    MOVES = [move_L, move_B, move_R, move_F]
+    for i in range(len(FACES_TO_LOOK_UP)):
+        if is_color_tile_at("white", FACES_TO_LOOK_UP[i], 1, 2):
+            previous_index = (i - 1) % 4
+            previous_face = FACES_TO_LOOK_UP[previous_index]
+            count_turns = 0
+            while daisy[previous_face] and count_turns < 4:
+                turn_daisy()
+                count_turns += 1
+            MOVES[i]()
+            daisy[previous_face] = True
+        if is_color_tile_at("white", FACES_TO_LOOK_UP[i], 1, 0):
+            next_index = (i + 1) % 4
+            next_face = FACES_TO_LOOK_UP[next_index]
+            count_turns = 0
+            while daisy[next_face] and count_turns < 4:
+                turn_daisy()
+                count_turns += 1
+            PRIME_MOVES[i]()
+            daisy[next_face] = True
+
+def turn_daisy():
+    petal_in_memory = daisy["front"]
+    daisy["front"] = daisy["right"]
+    daisy["right"] = daisy["back"]
+    daisy["back"] = daisy["left"]
+    daisy["left"] = petal_in_memory
+    move_U()
+
+def is_color_tile_at_edge(color, front_face, row_front, col_front, side_face, row_side, col_side):
     return (rubik_cube[front_face][row_front][col_front] == color
             or rubik_cube[side_face][row_side][col_side] == color)
 
-def look_at_the_middle_layer(daisy):
-    edges = []
-    for i in range(len(FACES_TO_LOOK_UP)):
-        next_index = 0 if i + 1 == len(FACES_TO_LOOK_UP) else i + 1
-        # I choose the *left* face to input as side_face so the F move would put it on the "Up" face
-        if is_color_tile_at_edge(FACES_TO_LOOK_UP[i], 1, 0, "white", FACES_TO_LOOK_UP[next_index], 1, 2):
-            daisy = arrange_petals_from_middle_layer(daisy, i, next_index)
-    return daisy
-
-def arrange_petals_from_middle_layer(daisy, actual_index, next_index):
-    if not daisy[FACES_TO_LOOK_UP[actual_index]]:
-        ALLOWED_MOVES = {"R": move_R, "L": move_L, "F": move_F, "B": move_B}
-        ALLOWED_MOVES[FACES_TO_LOOK_UP[actual_index][0].upper()]()
-        daisy[FACES_TO_LOOK_UP[actual_index]] = True
-    elif not daisy[FACES_TO_LOOK_UP[next_index]]:
-        ALLOWED_MOVES = {"R": move_R_prime, "L": move_L_prime, "F": move_F_prime, "B": move_B_prime}
-        ALLOWED_MOVES[FACES_TO_LOOK_UP[next_index][0].upper()]()
-        daisy[FACES_TO_LOOK_UP[next_index]] = True
-    else:
-        for i in range(2):
-            petal_in_memory = daisy["back"]
-            daisy["back"] = daisy["left"]
-            daisy["left"] = daisy["front"]
-            daisy["front"] = daisy["right"]
-            daisy["right"] = petal_in_memory
-            move_U()
-        actual_index = (actual_index + 2) % 4
-        next_index = (next_index + 2) % 4
-        daisy = arrange_petals_from_middle_layer(daisy, actual_index, next_index)
-        for i in range(2):
-            petal_in_memory = daisy["back"]
-            daisy["back"] = daisy["left"]
-            daisy["left"] = daisy["front"]
-            daisy["front"] = daisy["right"]
-            daisy["right"] = petal_in_memory
-            move_U()
-    return daisy
+def is_color_tile_at(color, front_face, row_front, col_front):
+    return rubik_cube[front_face][row_front][col_front] == color
 
 def look_at_the_top_layer():
-    daisy = {}
-    daisy["back"] = is_color_tile_at_edge("up", 0, 1, "white", "back", 0, 1) # 12 o'clock
-    daisy["right"] = is_color_tile_at_edge("up", 1, 2, "white", "right", 0, 1) # 3 o'clock
-    daisy["front"] = is_color_tile_at_edge("up", 2, 1, "white", "front", 0, 1) # 6 o'clock
-    daisy["left"] = is_color_tile_at_edge("up", 1, 0, "white", "left", 0, 1) # 9 o'clock
-    return daisy
+    daisy["back"] = is_color_tile_at_edge("white", "up", 0, 1, "back", 0, 1) # 12 o'clock
+    daisy["right"] = is_color_tile_at_edge("white", "up", 1, 2, "right", 0, 1) # 3 o'clock
+    daisy["front"] = is_color_tile_at_edge("white", "up", 2, 1, "front", 0, 1) # 6 o'clock
+    daisy["left"] = is_color_tile_at_edge("white", "up", 1, 0, "left", 0, 1) # 9 o'clock
+
+def are_white_edges_at_the_middle_layer():
+    return (is_color_tile_at_edge("white", "back", 1, 0, "right", 1, 2)
+            or is_color_tile_at_edge("white", "right", 1, 0, "front", 1, 2)
+            or is_color_tile_at_edge("white", "front", 1, 0, "left", 1, 2)
+            or is_color_tile_at_edge("white", "left", 1, 0, "back", 1, 2))
 
 def solve_the_middle_layer():
     pass
